@@ -12,17 +12,18 @@ Run() {
 	Test() { $PATH_DIR/AquesTalkPi 漢字も読めます | aplay; }
 	[ -f $PATH_DIR/AquesTalkPi ] && { Test; return; }
 	Download() {
-		wget https://www.a-quest.com/archive/package/aquestalkpi-20201010.tgz?download=1&readed=yes
+		wget -O aquestalkpi-20201010.tgz https://www.a-quest.com/archive/package/aquestalkpi-20201010.tgz?download=1&readed=yes
 		mkdir -p "$TO"
 		tar xf aquestalkpi-20201010.tgz -C "$TO"
 	}
 	MakeRunScript() {
 		echo '#!/bin/bash' >> $PATH_DIR/AquesTalkPi
-		echo "$TO/aquestalkpi/AquesTalkPi \"@\"" >> $PATH_DIR/AquesTalkPi
+		echo "$TO/aquestalkpi/AquesTalkPi \"\$@\"" >> $PATH_DIR/AquesTalkPi
+		chmod +x $PATH_DIR/AquesTalkPi
 	}
-	Install() {
-		# ~/bashrc に export PATH=$PATH:/home/pi/root/sys/env/tool を追記する
-	}
+#	Install() {
+#		# ~/bashrc に export PATH=$PATH:/home/pi/root/sys/env/tool を追記する
+#	}
 	MakeMp3() {
 		cd "$HERE"
 		mkdir -p ../docs/res/audio/wav
@@ -30,8 +31,8 @@ Run() {
 		cd ../docs/res/audio/wav
 		$PATH_DIR/AquesTalkPi -v f1 -o f1.wav 漢字も読めます
 		$PATH_DIR/AquesTalkPi -v f2 -o f2.wav 漢字も読めます
-		ffmpeg -i "f1.wav" -vn -ac 2 -ar 44100 -ab 256k -acodec libmp3lame -f mp3 "../mp3/f1.mp3"
-		ffmpeg -i "f2.wav" -vn -ac 2 -ar 44100 -ab 256k -acodec libmp3lame -f mp3 "../mp3/f2.mp3"
+		ffmpeg -i "f1.wav" -y -vn -ac 2 -ar 44100 -ab 256k -acodec libmp3lame -f mp3 "../mp3/f1.mp3"
+		ffmpeg -i "f2.wav" -y -vn -ac 2 -ar 44100 -ab 256k -acodec libmp3lame -f mp3 "../mp3/f2.mp3"
 	}
 	Download
 	MakeRunScript
